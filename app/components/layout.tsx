@@ -11,9 +11,7 @@ export default async function ComponentsLayout({ children }: { children: React.R
     <div className="mx-auto min-h-svh max-w-3xl space-y-8 px-4 py-8">
       <header className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">PROJECT CHARLIE</h1>
-        <p className="text-muted-foreground">
-          PROJECT CHARLIE
-        </p>
+        <p className="text-muted-foreground">PROJECT CHARLIE</p>
       </header>
       <Tabs />
       <Provider appConfig={appConfig}>

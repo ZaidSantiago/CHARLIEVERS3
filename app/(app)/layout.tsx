@@ -28,7 +28,6 @@ export default async function AppLayout({ children }: AppLayoutProps) {
           />
         </a>
         <span className="text-foreground font-mono text-xs font-bold tracking-wider uppercase">
-          
           © Project CHARLIE 2025
         </span>
       </header>

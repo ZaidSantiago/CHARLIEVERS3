@@ -61,8 +61,7 @@ export const SessionView = ({
             description: (
               <p className="w-full">
                 {reason}
-                
-                  We apologize for the inconvenience. Please try again later.
+                We apologize for the inconvenience. Please try again later.
               </p>
             ),
           });
