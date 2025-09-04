@@ -61,15 +61,8 @@ export const SessionView = ({
             description: (
               <p className="w-full">
                 {reason}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://docs.livekit.io/agents/start/voice-ai/"
-                  className="whitespace-nowrap underline"
-                >
-                  See quickstart guide
-                </a>
-                .
+                
+                  We apologize for the inconvenience. Please try again later.
               </p>
             ),
           });
