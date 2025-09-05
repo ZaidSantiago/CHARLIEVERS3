@@ -2,12 +2,18 @@ import { NextResponse } from 'next/server';
 import { AccessToken, type AccessTokenOptions, type VideoGrant } from 'livekit-server-sdk';
 import { RoomConfiguration } from '@livekit/protocol';
 
+
+
+
 // NOTE: you are expected to define the following environment variables in `.env.local`:
 const API_KEY = process.env.LIVEKIT_API_KEY;
 const API_SECRET = process.env.LIVEKIT_API_SECRET;
 const LIVEKIT_URL = process.env.LIVEKIT_URL;
 
 // don't cache the results
+
+
+
 export const revalidate = 0;
 
 export type ConnectionDetails = {
@@ -15,34 +21,35 @@ export type ConnectionDetails = {
   roomName: string;
   participantName: string;
   participantToken: string;
+  rawUserId?: string;
 };
 
 export async function POST(req: Request) {
   try {
-    if (LIVEKIT_URL === undefined) {
-      throw new Error('LIVEKIT_URL is not defined');
-    }
-    if (API_KEY === undefined) {
-      throw new Error('LIVEKIT_API_KEY is not defined');
-    }
-    if (API_SECRET === undefined) {
-      throw new Error('LIVEKIT_API_SECRET is not defined');
-    }
+    if (LIVEKIT_URL === undefined) throw new Error('LIVEKIT_URL is not defined');
+    if (API_KEY === undefined) throw new Error('LIVEKIT_API_KEY is not defined');
+    if (API_SECRET === undefined) throw new Error('LIVEKIT_API_SECRET is not defined');
 
-    // Parse agent configuration from request body
+    // Parse request body
     const body = await req.json();
     const agentName: string = body?.room_config?.agents?.[0]?.agent_name;
 
+    // Extract raw_user_id
+    const rawUserId = body?.raw_user_id;
+    console.log("Received raw_user_id:", rawUserId);
+
     // Generate participant token
-    const participantName = 'user';
+    const participantName = rawUserId;
     const participantIdentity = `voice_assistant_user_${Math.floor(Math.random() * 10_000)}`;
     const roomName = `voice_assistant_room_${Math.floor(Math.random() * 10_000)}`;
-
     const participantToken = await createParticipantToken(
       { identity: participantIdentity, name: participantName },
       roomName,
       agentName
     );
+    console.log(roomName); // <-- Add this line
+
+    
 
     // Return connection details
     const data: ConnectionDetails = {
@@ -50,10 +57,10 @@ export async function POST(req: Request) {
       roomName,
       participantToken: participantToken,
       participantName,
+      rawUserId,
     };
-    const headers = new Headers({
-      'Cache-Control': 'no-store',
-    });
+
+    const headers = new Headers({ 'Cache-Control': 'no-store' });
     return NextResponse.json(data, { headers });
   } catch (error) {
     if (error instanceof Error) {
@@ -85,6 +92,7 @@ function createParticipantToken(
     at.roomConfig = new RoomConfiguration({
       agents: [{ agentName }],
     });
+    
   }
 
   return at.toJwt();
